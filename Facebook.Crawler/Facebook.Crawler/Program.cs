@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Dynamic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,14 +17,30 @@ namespace Facebook.Crawler
         }
         public static void GetFacebookLoginUrl()
         {
-            string app_id = "1596455934002644";
-            string app_secret = "589bde7fbe33850dd8846151d847520b";
-            string access_token = "EAACEdEose0cBADEyWAlbLiGLZAjULkCGCOhdC5X8fpE5ubQJbOlIsZAnBsa6JaiXuJr6K1My769wimc4DsxghTjHErQkkhKidgHuzukunfikwqSmfGmpzmWrDptczA9pBjj1j0pXa64tsXhizCf5rns1cfkgBwVVj2O0G7GQZDZD";
+            try
+            {
+                string access_token = "EAACEdEose0cBAHnmJ4ZAKhoZA9kCwtX4pMK2qYW3Ngbno6kJeBmvbN6Mo3JnDOEZBN5KkkAnngQWXa25ZCAz0oD1hMFn1kg8kC3PmGXqRWljEnQeUeHNXK6mE5c1AuBurnAbN8716zPKQDvZAE5ARq6aZB2ilm8iqqX9Dew0huGdOMCj4CCmmo";
 
-            var _fb = new FacebookClient();
-            _fb.AccessToken = access_token;
-            _fb.Version = "v2.6";
-            var retorno = _fb.Get("1592515421013351?fields=feed{message,comments}");
+                var _fb = new FacebookClient();
+                _fb.AccessToken = access_token;
+                var retorno = _fb.Get("search?q=spotted+ufmg&type=page").ToString();
+
+                SearchPageResult spottedUFMGPages = JsonConvert.DeserializeObject<SearchPageResult>(retorno);
+
+                foreach (No page in spottedUFMGPages.data)
+                {
+                    var retorno2 = _fb.Get("" + page.Id + "/feed").ToString();
+                    string feeds = null;
+                    Console.Write(retorno2);
+                }
+
+                File.WriteAllText(@"D:\fb.json", retorno);
+
+            }
+            catch (Exception)
+            {
+                throw;
+            }
 
         }
     }
