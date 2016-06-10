@@ -51,19 +51,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Nodes\BaseNode.cs" />
+    <Compile Include="GlobalIO.cs" />
+    <Compile Include="Nodes\NodeConverter.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Nodes\CommentNode.cs" />
-    <Compile Include="Results\CommentResult.cs" />
     <Compile Include="Nodes\Cursors.cs" />
-    <Compile Include="Results\FeedResult.cs" />
     <Compile Include="Nodes\From.cs" />
     <Compile Include="Nodes\LikeNode.cs" />
-    <Compile Include="Results\LikesResult.cs" />
+    <Compile Include="Nodes\INode.cs" />
+    <Compile Include="Results\IResult.cs" />
+    <Compile Include="Results\ResultBase.cs" />
     <Compile Include="Nodes\Pagination.cs" />
     <Compile Include="Nodes\PageNode.cs" />
     <Compile Include="Nodes\PostNode.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="FacebookService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Results\PageResult.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
