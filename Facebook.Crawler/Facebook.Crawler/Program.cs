@@ -20,7 +20,7 @@ namespace Facebook.Crawler
             string lastGet = string.Empty;
             try
             {
-                string access_token = "EAACEdEose0cBAHZBsPcAGGc9YX2ZC0kJxEKfihdPB8esYsAAbIvX4jtOZCHg9moLvYk4Vekz3Jfup06kexD5m2ncrb1ypsPEvDjt1ObbjBVTrlauPnBoQhHkiwieMxbzQvOfdSRK82OxJpKqFK9bqavppAwIo7KPnYuXPuDgMyUflLohLcTgunC0qqSgZBAZD";
+                string access_token = "EAACEdEose0cBAEw1EbihQvNZAZBEZAVHilhmCVF3ukzIHI15cIFZBW4Pj0hOAw3flKIZBgfkefoRPm3ujXK9UdKobhxhB3wkfwudHoxtqUeuuIzncK6GZAi3a8nnLlZAc3wfNa4QmZBJjYK9JrAxWSlXJTAQjbZBQGZCTkZBiaSLZASceZC5soEYlyZAaxsIBBTcfi3dcZD";
                 var _fb = new FacebookClient();
 
                 _fb.AccessToken = access_token;
@@ -37,18 +37,18 @@ namespace Facebook.Crawler
                     lastGet = page.Id + "/feed";
                     var feedsTxt = _fb.Get("" + page.Id + "/feed").ToString();
                     var pageFeed = JsonConvert.DeserializeObject<FeedResult>(feedsTxt);
-                    EscreveJson(feedsTxt,path);
-                    while (pageFeed.paging.Next != null)
+                    while (pageFeed.paging != null | pageFeed.paging.Next != null)
                     {
                         lastGet = pageFeed.paging.Next;
                         feedsTxt = _fb.Get(pageFeed.paging.Next).ToString();
                         pageFeed = JsonConvert.DeserializeObject<FeedResult>(feedsTxt);
-                        EscreveJson(feedsTxt, path);
-                        Console.WriteLine( count++);
+                        foreach (var post in pageFeed.data)
+                        {
+                            EscreveJson(JsonConvert.SerializeObject(post), path);
+                            Console.WriteLine(count++);
+                        }
                     }
                 }
-
-
             }
             catch (Exception ex)
             {
