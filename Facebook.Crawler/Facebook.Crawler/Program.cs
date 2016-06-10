@@ -17,51 +17,68 @@ namespace Facebook.Crawler
         }
         public static void GetFacebookLoginUrl()
         {
+            string lastGet = string.Empty;
             try
             {
-                //string access_token = "EAACEdEose0cBAHnmJ4ZAKhoZA9kCwtX4pMK2qYW3Ngbno6kJeBmvbN6Mo3JnDOEZBN5KkkAnngQWXa25ZCAz0oD1hMFn1kg8kC3PmGXqRWljEnQeUeHNXK6mE5c1AuBurnAbN8716zPKQDvZAE5ARq6aZB2ilm8iqqX9Dew0huGdOMCj4CCmmo";
+                string access_token = "EAACEdEose0cBAHZBsPcAGGc9YX2ZC0kJxEKfihdPB8esYsAAbIvX4jtOZCHg9moLvYk4Vekz3Jfup06kexD5m2ncrb1ypsPEvDjt1ObbjBVTrlauPnBoQhHkiwieMxbzQvOfdSRK82OxJpKqFK9bqavppAwIo7KPnYuXPuDgMyUflLohLcTgunC0qqSgZBAZD";
                 var _fb = new FacebookClient();
-                FacebookOAuthResult oauthResult;
 
-                
-                dynamic parameters = new ExpandoObject();
-                parameters.client_id = "1596455934002644";
-                parameters.response_type = "token";
-                parameters.display = "page";
+                _fb.AccessToken = access_token;
 
+                var pages = _fb.Get("search?q=spotted+ufmg&type=page").ToString();
+                PageResult spottedUFMGPages = JsonConvert.DeserializeObject<PageResult>(pages);
 
-                var extendedPermissions = "user_likes,user_friends";
-                parameters.scope = extendedPermissions;
-                Uri uri = _fb.GetLoginUrl(parameters);
-                //_fb.AccessToken = access_token;
+                File.WriteAllText(@"D:\\fb_pages.json", pages);
 
-                var oauthValid = _fb.TryParseOAuthCallbackUrl(uri, out oauthResult);
-                parameters.client_secret = "589bde7fbe33850dd8846151d847520b";
-                parameters.code = oauthResult.Code;
-
-                dynamic result = _fb.Get("/oauth/access_token", parameters);
-                
-                _fb.AccessToken = result.access_token;
-
-                var retorno = _fb.Get("search?q=spotted+ufmg&type=page").ToString();
-
-                SearchPageResult spottedUFMGPages = JsonConvert.DeserializeObject<SearchPageResult>(retorno);
-
-                foreach (No page in spottedUFMGPages.data)
+                string path = "D:\\fb_posts.json";
+                int count = 0;
+                foreach (var page in spottedUFMGPages.data)
                 {
-                    var retorno2 = _fb.Get("" + page.Id + "/feed").ToString();
-                    string feeds = null;
-                    Console.Write(retorno2);
+                    lastGet = page.Id + "/feed";
+                    var feedsTxt = _fb.Get("" + page.Id + "/feed").ToString();
+                    var pageFeed = JsonConvert.DeserializeObject<FeedResult>(feedsTxt);
+                    EscreveJson(feedsTxt,path);
+                    while (pageFeed.paging.Next != null)
+                    {
+                        lastGet = pageFeed.paging.Next;
+                        feedsTxt = _fb.Get(pageFeed.paging.Next).ToString();
+                        pageFeed = JsonConvert.DeserializeObject<FeedResult>(feedsTxt);
+                        EscreveJson(feedsTxt, path);
+                        Console.WriteLine( count++);
+                    }
                 }
 
-                File.WriteAllText(@"D:\fb.json", retorno);
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Console.WriteLine("Error!");
+                Console.WriteLine(ex.Message);
+                Console.WriteLine("Last Get:" + lastGet);
                 throw;
             }
 
+        }
+
+        private static void EscreveJson(string json, string path)
+        {
+
+            // This text is added only once to the file.
+            if (!File.Exists(path))
+            {
+                // Create a file to write to.
+                using (StreamWriter sw = File.CreateText(path))
+                {
+                    sw.WriteLine(json);
+                }
+            }
+
+            // This text is always added, making the file longer over time
+            // if it is not deleted.
+            using (StreamWriter sw = File.AppendText(path))
+            {
+                sw.WriteLine(json);
+            }
         }
     }
 }

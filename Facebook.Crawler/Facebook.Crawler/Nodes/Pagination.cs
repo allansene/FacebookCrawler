@@ -2,10 +2,10 @@
 
 namespace Facebook.Crawler
 {
-    public class Page
+    public class Pagination
     {
         public Cursors Cursors { get; set; }
-        public string Previous { get; set; }
         public string Next { get; set; }
+        public string Previous { get; set; }
     }
 }

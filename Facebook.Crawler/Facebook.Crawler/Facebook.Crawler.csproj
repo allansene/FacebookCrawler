@@ -51,12 +51,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Cursors.cs" />
-    <Compile Include="Node.cs" />
-    <Compile Include="Page.cs" />
+    <Compile Include="Nodes\CommentNode.cs" />
+    <Compile Include="Results\CommentResult.cs" />
+    <Compile Include="Nodes\Cursors.cs" />
+    <Compile Include="Results\FeedResult.cs" />
+    <Compile Include="Nodes\From.cs" />
+    <Compile Include="Nodes\LikeNode.cs" />
+    <Compile Include="Results\LikesResult.cs" />
+    <Compile Include="Nodes\Pagination.cs" />
+    <Compile Include="Nodes\PageNode.cs" />
+    <Compile Include="Nodes\PostNode.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SearchPageResult.cs" />
+    <Compile Include="Results\PageResult.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
