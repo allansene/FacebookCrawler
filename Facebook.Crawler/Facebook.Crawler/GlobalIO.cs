@@ -4,7 +4,6 @@ namespace Facebook.Crawler
 {
     public class GlobalIO
     {
-
         public void WriteJson(string json, string path)
         {
 

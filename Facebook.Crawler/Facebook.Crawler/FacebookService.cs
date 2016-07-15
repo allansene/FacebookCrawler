@@ -1,6 +1,10 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
+using System.Collections.Generic;
+using System.Dynamic;
+using System.IO;
+using System.Net;
 
 namespace Facebook.Crawler
 {
@@ -29,23 +33,20 @@ namespace Facebook.Crawler
         private FacebookClient InitFacebookClient(string access_token)
         {
             var _fb = new FacebookClient();
-            try
-            {
-                //access_token = "EAACEdEose0cBAEw1EbihQvNZAZBEZAVHilhmCVF3ukzIHI15cIFZBW4Pj0hOAw3flKIZBgfkefoRPm3ujXK9UdKobhxhB3wkfwudHoxtqUeuuIzncK6GZAi3a8nnLlZAc3wfNa4QmZBJjYK9JrAxWSlXJTAQjbZBQGZCTkZBiaSLZASceZC5soEYlyZAaxsIBBTcfi3dcZD";
-                _fb.AccessToken = access_token;
 
-                return _fb;
-            }
-            catch
+            if (access_token == "")
             {
-
+                access_token = "1596455934002644|nNTMBX9TT8tr0dH3igR7nkJfMuo";
             }
+            _fb.AccessToken = access_token;
 
             return _fb;
+
         }
 
         public IResult ProcessSearchQuery(string query, SEARCH_TYPE type)
         {
+
             IResult result = null;
             query = "search?q=" + query;
             try
@@ -55,24 +56,24 @@ namespace Facebook.Crawler
                 switch (type)
                 {
                     case SEARCH_TYPE.user:
-                        var users = _fbClient.Get(query + "&type=" + type.ToString()).ToString();
+                        var users = _fbClient.Get(query + "&type=" + type).ToString();
                         result = JsonConvert.DeserializeObject<ResultBase<BaseNode>>(users, _settings);
                         break;
                     case SEARCH_TYPE.page:
-                        var pages = _fbClient.Get(query + "&type=" + type.ToString()).ToString();
+                        var pages = _fbClient.Get(query + "&type=" + type).ToString();
                         result = JsonConvert.DeserializeObject<ResultBase<PageNode>>(pages, new PageNodeConverter());
                         break;
                     case SEARCH_TYPE.@event:
-                        var events = _fbClient.Get(query + "&type=" + type.ToString()).ToString();
+                        var events = _fbClient.Get(query + "&type=" + type).ToString();
                         result = JsonConvert.DeserializeObject<ResultBase<BaseNode>>(events, _settings);
                         break;
                     case SEARCH_TYPE.group:
-                        var groups = _fbClient.Get(query + "&type=" + type.ToString()).ToString();
+                        var groups = _fbClient.Get(query + "&type=" + type).ToString();
                         result = JsonConvert.DeserializeObject<ResultBase<BaseNode>>(groups, _settings);
                         break;
                     default:
-                        var pages2 = _fbClient.Get(query + "&type=" + type.ToString()).ToString();
-                        result = JsonConvert.DeserializeObject<ResultBase<PageNode>>(pages2, _settings);
+                        var pages2 = _fbClient.Get(query).ToString();
+                        result = JsonConvert.DeserializeObject<ResultBase<BaseNode>>(pages2, _settings);
                         break;
                 }
 
@@ -89,7 +90,7 @@ namespace Facebook.Crawler
         {
 
             string lastGet = string.Empty;
-            
+
             try
             {
                 int count = 0;
@@ -120,6 +121,7 @@ namespace Facebook.Crawler
             }
 
         }
+
 
     }
 }
